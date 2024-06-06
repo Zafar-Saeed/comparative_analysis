@@ -1,0 +1,13 @@
+{"MRR": 0.39186975359916687,
+"evaluation_time": "days: 0.0, hours: 0.0, minutes: 0.0, seconds: 0.0640251636505127",
+"exp_MRR": 0.39186975359916687,
+"exp_hit_at_1": 0.1417910447761194,
+"exp_hit_at_10": 0.7512437810945274,
+"exp_hit_at_3": 0.5199004975124378,
+"exp_hit_at_5": 0.7512437810945274,
+"explicit_evaluation_time": "days: 0.0, hours: 0.0, minutes: 0.0, seconds: 0.04849672317504883",
+"hit_at_1": 0.1417910447761194,
+"hit_at_10": 0.7512437810945274,
+"hit_at_3": 0.5199004975124378,
+"hit_at_5": 0.7512437810945274,
+"training_time": "days: 0.0, hours: 0.0, minutes: 0.0, seconds: 2.167490005493164"}
