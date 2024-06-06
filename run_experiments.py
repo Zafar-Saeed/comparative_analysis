@@ -17,27 +17,24 @@ import copy
 import sys
 import time
 from datetime import datetime
-
 # my files or classes
 import util
-
+import model_loader
 
 # IMPORTS FROM KGE-RL
 from negateive_samplers.kge_rl import data_loader
 
 
-def main(exp_name,data_path, is_code_testing=False, dataset_name=None, is_model_test=False):
+def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_model_test=False):
 
-    # dataset_name = 'nations'
-    # util.write_pykeen_dataset(data_path, test_dataset_name)
-    # os.makedirs("./data/directory1/directory2",exist_ok=True)
-    # sys.exit(0)
+    # use exp_config for load all configs from data_path/exp_configs
+
 
     # for running all the experiments, I need to load all the config files in folder experiment_specs and move the following code in saperate function for running experiments in parallel
     # in that function I also need to check if some code has crashed and what files are present the the result_dir. 
     # If the trained model is saved, then I might need to resume for evaluation process only
-    if os.path.exists(os.path.join(data_path,"experiment_specs","exp_config.json")):
-        config = json.load(open(os.path.join(data_path,"experiment_specs","exp_config.json")))    
+    if os.path.exists(os.path.join(data_path,exp_configs,"exp_config.json")):
+        config = json.load(open(os.path.join(data_path,exp_configs,"exp_config.json")))    
     else:
         print("Main configuration file does not exist. Exiting")
         return
@@ -54,17 +51,11 @@ def main(exp_name,data_path, is_code_testing=False, dataset_name=None, is_model_
         config["num_epochs"]=50
         util.write_pykeen_dataset(data_path, dataset_name)
           
-
-    
     config["exp_name"] = config["model"]+"_"+str(config["num_negs"])
     config["results_dir"] =  os.path.join(data_path,"Results",config["dataset_name"],config["neg_sampler"])
     #config["data_index_path"] = os.path.join(data_path,"Results",config["dataset_name"]) # for storing entity and relation index in pickle
     config["dataset_path"] = os.path.join(data_path, config["dataset_name"])
-    # if os.path.exists(results_dir):
-    #     print("{} already exists, Overwriting existing files.\n".format(results_dir))
-    #     # return
-    # else:
-    #     os.makedirs(results_dir)
+ 
     os.makedirs(config["results_dir"], exist_ok=True)
 
     util.dump_json(config, config["results_dir"], "{}_config.json".format(config["exp_name"]))
@@ -224,14 +215,23 @@ def main(exp_name,data_path, is_code_testing=False, dataset_name=None, is_model_
     # regularizer
     #HPO -> hyper parameter optimization --- there are defult settings if this is not explicitly initialized
         # embedding_dimensions: {type: int, low: 16, high: 256}
-    _model = TransE(
-        triples_factory=train_triples,
-        regularizer=_regularizer,
-        random_seed=1234,
-        loss=_loss,
-        embedding_dim=config.get("ent_dim",50)
-        # device = _device
-        ).to(_device)
+    # _model = TransE(
+    #     triples_factory=train_triples,
+    #     regularizer=_regularizer,
+    #     random_seed=1234,
+    #     loss=_loss,
+    #     embedding_dim=config.get("ent_dim",50)
+    #     # device = _device
+    #     ).to(_device)
+
+    _model = model_loader.load_model(
+        config["model"], 
+        train_triples, 
+        _regularizer,
+        _loss,
+        config["ent_dim"],
+        _device,
+        )
 
     _optimizer_kwargs= dict(lr=config.get("lr",0.01))
     _optimizer = Adam(params=_model.parameters(), **_optimizer_kwargs)
@@ -270,6 +270,16 @@ def main(exp_name,data_path, is_code_testing=False, dataset_name=None, is_model_
 
     #IMPORTANT: train functions has so many parameters including EARLY STOPPER
     # Evaluation callbacks can be used for early stoping
+    # early_stopper = EarlyStopper(
+    #         model=_model,
+    #         evaluator=RankBasedEvaluator(),
+    #         triples_factory=validation_triples,
+    #         frequency=5,
+    #         patience=15,
+    #         relative_delta=0.001
+    #     )
+
+    
     train_start_time = time.time()
     print("***Training Started*** \t Time: {}".format(datetime.now()))
     losses_per_epoch = _training_loop.train(
@@ -280,14 +290,7 @@ def main(exp_name,data_path, is_code_testing=False, dataset_name=None, is_model_
         # slice_size=5,
         # sub_batch_size=10,
         # num_workers=10,
-        # early_stopping=EarlyStopper(
-        #     model=_model,
-        #     evaluator=RankBasedEvaluator(),
-        #     triples_factory=validation_triples,
-        #     frequency=5,
-        #     patience=15,
-        #     relative_delta=0.001
-        # )
+        # early_stopping=early_stopper,
         # additional_filter_triples=[train_triples.mapped_triples,validation_triples.mapped_triples],
         #regularizer=_regularizer,
         # NEW: validation evaluation callback
@@ -377,7 +380,7 @@ def main(exp_name,data_path, is_code_testing=False, dataset_name=None, is_model_
         # exp_hit_at_3=exp_results.get_metric('hits@3'),
         # exp_hit_at_5=exp_results.get_metric('hits@5'),
         # exp_hit_at_10=exp_results.get_metric('hits@5'),
-        # exp_MRR=exp_results.get_metric('mean_reciprocal_rank'),
+        # exp_MRR=exp_results.get_metric('mean_reciprocal_rank')
         training_time=total_training_time,
         evaluation_time=total_eval_time,
         # explicit_evaluation_time=total_exp_eval_time,
@@ -398,11 +401,11 @@ import argparse
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('exp_name')
+    parser.add_argument('exp_configs')
     parser.add_argument('data_path')
     parser.add_argument('--test_code', dest='is_code_testing', action='store_true', help='A boolean flag')
     parser.add_argument('test_dataset_name')
     parser.add_argument('--test_model', dest='is_model_testing', action='store_true', help='A boolean flag')
     
     args = parser.parse_args()
-    main(args.exp_name,args.data_path, args.is_code_testing, args.test_dataset_name, args.is_model_testing)
+    main(args.exp_configs,args.data_path, args.is_code_testing, args.test_dataset_name, args.is_model_testing)

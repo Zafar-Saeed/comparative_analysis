@@ -132,19 +132,19 @@ class WrapperNegativeSampler(NegativeSampler):
     def get_neg_sampler(self, triples, results_dir):
         
         if self.config['neg_sampler'] == 'random':
-            return negative_sampling.Random_Sampler(triples,self.config['num_negs'])
+            return negative_sampling.Random_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'corrupt':
-            return negative_sampling.Corrupt_Sampler(triples,self.config['num_negs'])
+            return negative_sampling.Corrupt_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'typed':
-            return negative_sampling.Typed_Sampler(triples,self.config['num_negs'],results_dir)
+            return negative_sampling.Typed_Sampler(triples,self.config["num_negs"],results_dir)
         elif self.config['neg_sampler'] == 'relational':
-            return negative_sampling.Relational_Sampler(triples,self.config['num_negs'])
+            return negative_sampling.Relational_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'nn':
-            return negative_sampling.NN_Sampler(triples,self.config['num_negs'])
+            return negative_sampling.NN_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'adversarial':
-            return negative_sampling.Adversarial_Sampler(triples, self.config['num_negs'])
+            return negative_sampling.Adversarial_Sampler(triples, self.config["num_negs"])
         elif self.config['neg_sampler'] == 'rl':
-            return negative_sampling.Policy_Sampler(triples, self.config['num_negs'])
+            return negative_sampling.Policy_Sampler(triples, self.config["num_negs"])
         else:
             raise NotImplementedError("Neg. Sampler {} not implemented".format(self.config['neg_sampler']))
 

@@ -10,10 +10,10 @@
             "request": "launch",
             // "module": "TestingPyKeen",
             "module": "run_experiments",
-            "args": ["exp_config", "./data/", "--test_code", "kinships"],
-            // "args": ["exp_config", "./data/", "--test_code" "kinships" "--test_model"],
-            // "args": ["exp_config", "./data/", "--test_model"],
-            // "args": ["exp_config", "./data/"],
+            "args": ["experiment_specs", "./data/", "--test_code", "kinships"],
+            // "args": ["experiment_specs", "./data/", "--test_code" "kinships" "--test_model"],
+            // "args": ["experiment_specs", "./data/", "--test_model"],
+            // "args": ["experiment_specs", "./data/"],
             "justMyCode": false
         }
     ]
