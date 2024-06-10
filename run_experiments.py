@@ -48,7 +48,7 @@ def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_mod
             config["batch_size"]=100  
             
         config["num_negs"]=10
-        config["num_epochs"]=50
+        config["num_epochs"]=10
         util.write_pykeen_dataset(data_path, dataset_name)
           
     config["exp_name"] = config["model"]+"_"+str(config["num_negs"])
@@ -202,9 +202,9 @@ def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_mod
     config["device"] = _device
 
     _regularizer = LpRegularizer(
-        p=2, 
-        weight=config.get("l2",0.0001),
-        )  # L2 regularization with defult weight 0.0001
+            p=2, 
+            weight=config.get("l2",0.0001),
+            )  # L2 regularization with defult weight 0.0001
 
 
     _loss = MarginRankingLoss(

@@ -12,7 +12,7 @@
             "module": "run_experiments",
             "args": ["experiment_specs", "./data/", "--test_code", "kinships"],
             // "args": ["experiment_specs", "./data/", "--test_code" "kinships" "--test_model"],
-            // "args": ["experiment_specs", "./data/", "--test_model"],
+            // "args": ["experiment_specs", "./data/", "--test_model"], // --test_model should load the pre-trained model and continue with evaluation only
             // "args": ["experiment_specs", "./data/"],
             "justMyCode": false
         }
