@@ -7,7 +7,7 @@
   "lr":0.01,
   "model": "transE",
   "num_epochs": 100,
-  "neg_sampler": "corrupt",
+  "neg_sampler": "typed",
   "num_negs": 10,
   "operation": "train",
   "dataset_name": "FB15K"}

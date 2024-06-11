@@ -1,0 +1,13 @@
+{"batch_size": 100,
+"dataset_name": "kinships",
+"dataset_path": "./data/kinships",
+"ent_dim": 100,
+"exp_name": "distmult_2",
+"is_dev": true,
+"l2": 3.120071843121878e-06,
+"lr": 0.01,
+"model": "distmult",
+"neg_sampler": "corrupt",
+"num_epochs": 10,
+"num_negs": 2,
+"results_dir": "./data/Results/kinships/corrupt"}

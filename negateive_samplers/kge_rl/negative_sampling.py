@@ -9,6 +9,9 @@ import numpy as np
 # IMPORTS FROM KGE-RL
 from negateive_samplers.kge_rl.sample_list import sample_list
 
+# my files or classes
+from shared_index import SharedIndex
+
 class Negative_Sampler(object):
     def __init__(self,triples,num_samples,filtered):
         self.num_samples = num_samples
@@ -157,14 +160,33 @@ class Typed_Sampler(Static_Sampler):
     def __init__(self,triples,num_samples,results_dir,filtered=True):
         super(Typed_Sampler, self).__init__(triples,num_samples,filtered)
         print("\tNeg. Sampler: Typed, num_samples: {}, filtered: {}".format(num_samples, filtered))
-        self.ent_index = pickle.load(open(os.path.join(results_dir, constants.entity_ind)))
+
+        ##########################################################################################
+        # Zafar: a small fix in the following line
+        # self.ent_index = pickle.load(open(os.path.join(results_dir, constants.entity_ind)))
+        self.ent_index = pickle.load(open(os.path.join(results_dir,constants.entity_ind),'rb'))
+        ##########################################################################################
+        # temp_ent_index = SharedIndex.get_instance().index.ent_index
+
         self.ent_cats,self.cat_ents = self.load_cats()
 
 
     def load_cats(self):
         ent_cats, cat_ents = dict(),dict()
-        all_cats = pickle.load(open(constants.cat_file))
-        for k,v in all_cats.iteritems():
+        
+        ##########################################################################################
+        # Zafar: a small fix in the following line
+        # all_cats = pickle.load(open(constants.cat_file))
+        current_dir = os.path.dirname(__file__)
+        all_cats = pickle.load(open(os.path.join(current_dir,constants.cat_file),'rb'))
+        ##########################################################################################
+
+        ##########################################################################################
+        # Zafar: a small fix in the following line
+        #  because dict.iteritems() is from Python 2 has depricated and replace with dict.items 
+        # for k,v in all_cats.iteritems():
+        for k,v in all_cats.items():
+        ##########################################################################################  
             ent_cats[self.ent_index[k]] = v
             for c in v:
                 ents = cat_ents.get(c, set())

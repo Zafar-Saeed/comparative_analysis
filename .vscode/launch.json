@@ -9,11 +9,14 @@
             "type": "debugpy",
             "request": "launch",
             // "module": "TestingPyKeen",
-            "module": "run_experiments",
+            // "module": "run_experiments",
+            // "module": "experiment_manager",
+            "module": "experiment_manager_MT",
             "args": ["experiment_specs", "./data/", "--test_code", "kinships"],
+            // "args": ["experiment_specs", "./data/", "--test_code", "kinships"],
             // "args": ["experiment_specs", "./data/", "--test_code" "kinships" "--test_model"],
             // "args": ["experiment_specs", "./data/", "--test_model"], // --test_model should load the pre-trained model and continue with evaluation only
-            // "args": ["experiment_specs", "./data/"],
+            // "args": ["experiment_specs", "./data/", "FB15K"],
             "justMyCode": false
         }
     ]

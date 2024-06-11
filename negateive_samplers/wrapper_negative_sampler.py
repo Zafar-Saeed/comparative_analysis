@@ -97,7 +97,7 @@ class WrapperNegativeSampler(NegativeSampler):
         corruption_scheme: Optional[Collection[Target]] = None,
         config,
         data_for_ns,
-        results_dir,
+        ent_rel_idx_dir,
         **kwargs,
     ) -> None:
         """Initialize the basic negative sampler with the given entities.
@@ -126,17 +126,17 @@ class WrapperNegativeSampler(NegativeSampler):
         #Zafar: according to the existing code, I am hard fixing it here
         self.num_negs_per_pos = self.config.get("num_negs",1) * len(self._corruption_indices)
 
-        self.sampler = self.get_neg_sampler(data_for_ns, results_dir)
+        self.sampler = self.get_neg_sampler(data_for_ns, ent_rel_idx_dir)
     
     #Zafar: new function
-    def get_neg_sampler(self, triples, results_dir):
+    def get_neg_sampler(self, triples, ent_rel_idx_dir):
         
         if self.config['neg_sampler'] == 'random':
             return negative_sampling.Random_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'corrupt':
             return negative_sampling.Corrupt_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'typed':
-            return negative_sampling.Typed_Sampler(triples,self.config["num_negs"],results_dir)
+            return negative_sampling.Typed_Sampler(triples,self.config["num_negs"],ent_rel_idx_dir)
         elif self.config['neg_sampler'] == 'relational':
             return negative_sampling.Relational_Sampler(triples,self.config["num_negs"])
         elif self.config['neg_sampler'] == 'nn':

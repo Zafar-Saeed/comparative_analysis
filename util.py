@@ -130,26 +130,26 @@ def merge_dicts_with_union(sample_1: dict, sample_2: dict):
     
 
 def dump_to_pickle_file(data, directory: str, file_name: str):
-    """Dump a dictionary to a pickle file using the highest protocol available."""
+    print("**** Dumping data to a pickle file using the highest protocol available ****")
     if not os.path.exists(directory):
-        print("{} does not exist, creating new directory.\n".format(directory))
+        print("\t{} does not exist, creating new directory.\n".format(directory))
         os.makedirs(directory)
 
     if os.path.exists(os.path.join(directory,file_name)):
-        print("Pickel file already exist on path. {0} Overwriting..".format(file_name))
+        print("\tPickel file already exist on path. {0} Overwriting..".format(file_name))
     
     with open(os.path.join(directory,file_name), 'wb') as f:
         pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def dump_json(data, directory: str, file_name: str):
-    print("Writing Json file: {}".format(file_name))
+    print("**** Dumping Json file: {} ****".format(file_name))
     if not os.path.exists(directory):
-        print("{} does not exist, creating new directory.\n".format(directory))
+        print("\t{} does not exist, creating new directory.\n".format(directory))
         os.makedirs(directory)
     
     if os.path.exists(os.path.join(directory,file_name)):
-        print("Json file already exist on path. Now overwriting {0} ...".format(file_name))
+        print("\tJson file already exist on path. Now overwriting {0} ...".format(file_name))
     
     json.dump(
         data,
@@ -214,3 +214,39 @@ def write_pykeen_dataset(data_path: str, dataset_name: str):
 
 def load_model(model_name, config):
     return model_name
+
+
+def load_config_files(directory_path: str, extension: str):
+    
+    try:
+        if os.path.exists(directory_path):
+
+            config_files = []
+            # Filter the list of files include only *.json
+            pattern = re.compile(r'.*\.{}$'.format(extension), re.IGNORECASE)
+            for filename in os.listdir(directory_path):
+                if pattern.match(filename):
+                    config_files.append(filename)
+
+            config_files = sorted(config_files)
+            
+            config = json.load(open(os.path.join(directory_path,config_files[0])))    
+            all_config_files = dict()
+
+            all_config_files[config_files[0]] = config
+
+            total_files = len(config_files)
+            print("\tConfiguring {} number of experiments...".format(total_files))   
+            for file in config_files[1:]:
+                print("\t\tLoading configuration files: {}".format(file))
+                all_config_files[file] = json.load(open(os.path.join(directory_path,file)))
+               
+            return all_config_files
+        else:
+            return None
+    
+    except FileNotFoundError:
+        print(f"Error: The directory '{directory_path}' does not exist.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+    return None

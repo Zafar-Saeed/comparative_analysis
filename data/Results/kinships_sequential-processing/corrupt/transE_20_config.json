@@ -1,0 +1,13 @@
+{"batch_size": 100,
+"dataset_name": "kinships",
+"dataset_path": "./data/kinships",
+"ent_dim": 100,
+"exp_name": "transE_20",
+"is_dev": true,
+"l2": 0.0001863777691779108,
+"lr": 0.01,
+"model": "transE",
+"neg_sampler": "corrupt",
+"num_epochs": 10,
+"num_negs": 20,
+"results_dir": "./data/Results/kinships/corrupt"}

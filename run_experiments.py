@@ -20,24 +20,20 @@ from datetime import datetime
 # my files or classes
 import util
 import model_loader
+from shared_index import SharedIndex
 
 # IMPORTS FROM KGE-RL
 from negateive_samplers.kge_rl import data_loader
 
 
-def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_model_test=False):
+def run_experiment(exp_config,data_path, is_code_testing=False, dataset_name=None, is_model_test=False):
 
-    # use exp_config for load all configs from data_path/exp_configs
-
-
-    # for running all the experiments, I need to load all the config files in folder experiment_specs and move the following code in saperate function for running experiments in parallel
-    # in that function I also need to check if some code has crashed and what files are present the the result_dir. 
-    # If the trained model is saved, then I might need to resume for evaluation process only
-    if os.path.exists(os.path.join(data_path,exp_configs,"exp_config.json")):
-        config = json.load(open(os.path.join(data_path,exp_configs,"exp_config.json")))    
-    else:
-        print("Main configuration file does not exist. Exiting")
-        return
+    # if os.path.exists(os.path.join(data_path,exp_config,"exp_config.json")):
+    #     config = json.load(open(os.path.join(data_path,exp_config,"exp_config.json")))    
+    # else:
+    #     print("Main configuration file does not exist. Exiting")
+    #     return
+    config = exp_config
 
     if is_code_testing: # temporary for testing
         if dataset_name == None:
@@ -47,7 +43,7 @@ def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_mod
             config["dataset_name"] = dataset_name
             config["batch_size"]=100  
             
-        config["num_negs"]=10
+        # config["num_negs"]=10
         config["num_epochs"]=10
         util.write_pykeen_dataset(data_path, dataset_name)
           
@@ -56,6 +52,8 @@ def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_mod
     #config["data_index_path"] = os.path.join(data_path,"Results",config["dataset_name"]) # for storing entity and relation index in pickle
     config["dataset_path"] = os.path.join(data_path, config["dataset_name"])
  
+    # return # forced returning just for testing
+
     os.makedirs(config["results_dir"], exist_ok=True)
 
     util.dump_json(config, config["results_dir"], "{}_config.json".format(config["exp_name"]))
@@ -81,17 +79,18 @@ def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_mod
     valid_file = os.path.join(config["dataset_path"], "dev")
     test_file = os.path.join(config["dataset_path"], "test")
 
-    index = data_loader.Index()
-
-    index.load_index(config["dataset_path"])
+    # index = data_loader.Index()
+    shared_index = SharedIndex.get_instance()
+    shared_index.index.load_index(config["dataset_path"])
+    # index.load_index(config["dataset_path"])
    
     from typing import Mapping
 
     EntityMapping = Mapping[str, int]
     RelationMapping = Mapping[str, int]
 
-    entity_mapping: EntityMapping = index.ent_index
-    relation_mapping: RelationMapping = index.rel_index
+    entity_mapping: EntityMapping = shared_index.index.ent_index
+    relation_mapping: RelationMapping = shared_index.index.rel_index
 
 # region Different ways to load dataset in pykeen
 
@@ -251,7 +250,7 @@ def main(exp_configs,data_path, is_code_testing=False, dataset_name=None, is_mod
             mapped_triples=train_triples.mapped_triples,
             num_negs_per_pos=config.get("num_negs",1),
             config=config,
-            results_dir=config["results_dir"],
+            ent_rel_idx_dir=config["dataset_path"],
             data_for_ns=data_for_negative_sampler
             ),
         optimizer=_optimizer,
@@ -401,11 +400,11 @@ import argparse
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('exp_configs')
+    parser.add_argument('exp_config')
     parser.add_argument('data_path')
     parser.add_argument('--test_code', dest='is_code_testing', action='store_true', help='A boolean flag')
-    parser.add_argument('test_dataset_name')
+    parser.add_argument('test_dataset_name', type=str, default=None, nargs ='?')
     parser.add_argument('--test_model', dest='is_model_testing', action='store_true', help='A boolean flag')
     
     args = parser.parse_args()
-    main(args.exp_configs,args.data_path, args.is_code_testing, args.test_dataset_name, args.is_model_testing)
+    run_experiment(args.exp_config,args.data_path, args.is_code_testing, args.test_dataset_name, args.is_model_testing)

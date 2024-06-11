@@ -1,8 +1,8 @@
 # __author__=  'Bhushan Kotnis'
 
 #Index file names
-entity_ind_file = 'entities.cpkl'
-rel_ind_file = 'relations.cpkl'
+entity_ind = 'entities.cpkl'
+rel_ind = 'relations.cpkl'
 negative_sample_file_prefix = "tiples_index_dictionary_epoch"
 
 '''SGD Batch Size'''
@@ -33,8 +33,10 @@ wn_ents = 40943
 
 fb13_ents=75043
 fb13_rels=13
-cat_file='/home/mitarb/kotnis/Code/kge-rl/entity_cat.cpkl'
+#cat_file='/home/mitarb/kotnis/Code/kge-rl/entity_cat.cpkl'
 
 #ZAFAR
+# /Users/zafarsaeed/Uniba Italy/Research/Source Code/code/comparative_analysis/negateive_samplers/kge_rl/entity_cat.cpkl
+cat_file='entity_cat.cpkl'
 data_path = "./data"
 experiment_config = dict()
