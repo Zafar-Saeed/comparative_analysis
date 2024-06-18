@@ -1,30 +1,7 @@
-import json
 import os
-import constants
-from pykeen.triples import TriplesFactory
-from negateive_samplers.wrapper_negative_sampler import WrapperNegativeSampler
-import torch
-# Pick a model
-from pykeen.regularizers import LpRegularizer
-from pykeen.models import TransE
-# Pick a training approach (sLCWA or LCWA)
-from pykeen.training import SLCWATrainingLoop
-from pykeen.evaluation import LCWAEvaluationLoop, RankBasedEvaluator
-from pykeen.optimizers import Adam
-from pykeen.losses import MarginRankingLoss
-from pykeen.stoppers import EarlyStopper
-import copy
-import sys
-import time
-from datetime import datetime
 # my files or classes
 import util
-import model_loader
 from run_experiments import run_experiment
-
-# IMPORTS FROM KGE-RL
-from negateive_samplers.kge_rl import data_loader
-
 
 def main(exp_configs_path,data_path, dataset_name=None, is_code_testing=False, is_model_test=False):
 

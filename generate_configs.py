@@ -2,35 +2,76 @@ import numpy as np
 import json
 import constants
 import os
+import datetime as dt
+import util
 def main():
     data = 'wordnet'
-    base = "./data/kotnis/data/neg_sampling/"
-    models = {'rescal':7.484410236920948e-05,'transE':0.0001863777691779108,'distmult':3.120071843121878e-06,'complex': 2.8198448631731174e-05}
-    samplers = {"random","corrupt","relational","nn","adversarial"}
+    
+    #every time a new folder will be created
+    base = "./data/experiment_configs_"+str(dt.datetime.now())
+
+    # Later, I need to change the model configuration with hyper parameter optimization
+    default_regularizer_value = 0.0001 
+   
+    # models = {
+    #     'transe':0.0001863777691779108,
+    #     'distmult':3.120071843121878e-06,
+    #     'complex': 2.8198448631731174e-05,
+    #     'simple': 2.8198448631731174e-05,
+    #     'rescal': 2.8198448631731174e-05,
+    #     }
+    models = {
+        'transe':0.0001863777691779108,
+        'transh': default_regularizer_value,
+        'transr': default_regularizer_value,
+        'transd': default_regularizer_value,
+        'distmult':3.120071843121878e-06,
+        'complex': 2.8198448631731174e-05,
+        'simple': 2.8198448631731174e-05,
+        'rotate': default_regularizer_value,
+        'rescal': 2.8198448631731174e-05,
+        'tucker': default_regularizer_value,
+        'quote': default_regularizer_value,
+        'hole': default_regularizer_value,
+        'boxe': default_regularizer_value,
+        }
+    
+    # at this moment typed information is available for Freebase dataset only
+    # later, datasets with schema level information could also be included
+    # also, I need to add more techniques in the following array to generates configs
+    if data == 'FB15K' or data == 'FB15K237': 
+        samplers = {"random","corrupt","relational","typed", "nn","adversarial"}
+    else:
+        samplers = {"random","corrupt","relational", "nn","adversarial"}
+
     #models = {'complex'}
     l2 = 1.3074905074564395e-06# from hyper-param tuning
-    for model,l2 in models.iteritems():
+    for model,l2 in models.items():
         for sampler in samplers:
             num_negs(model,data,base,l2,sampler)
         #tune_l2(model,data,base)
 
 def num_negs(model,data,base,l2,sampler):
-    if not os.path.exists(base + "{}/experiment_specs/{}".format(data,sampler)):
-        os.mkdir(base + "{}/experiment_specs/{}".format(data,sampler))
+    os.makedirs(base + "{}/experiment_specs/{}".format(data,sampler),exist_ok=True)
+
+    # if not os.path.exists(base + "{}/experiment_specs/{}".format(data,sampler)):
+    #     os.mkdir(base + "{}/experiment_specs/{}".format(data,sampler))
     path = base + "{}/experiment_specs/{}/".format(data,sampler)
     exp_name = "{}".format(model) + "{}.json"
     config = create_config(model,sampler,l2)
     negs = [1,2,5,10,20,50,100]
     for n in negs:
         config['num_negs'] = n
-        json.dump(config, open(path + exp_name.format("_" + str(n)), 'w'),
-                  sort_keys=True, separators=(',\n', ':'))
+        # dump_json(data, directory: str, file_name: str):
+        util.dump_json(config, path, exp_name.format("_" + str(n)))
+        # json.dump(config, open(path + exp_name.format("_" + str(n)), 'w'),
+        #           sort_keys=True, separators=(',\n', ':'))
 
 def tune_l2(model,data,base):
     path = base+"{}/experiment_specs/".format(data)
     exp_name = "{}".format(model) + "{}.json"
     config = create_config(model,'random',0.0)
-    l2 = np.sort(np.random.uniform(3.5,6,size=4))
+    l2 = np.sort(np.random.uniform(3.5,6,size=4)) 
 
     for count,e in enumerate(l2):
             config['l2'] = np.power(10,-e)

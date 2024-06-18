@@ -1,0 +1,13 @@
+{"batch_size": 500,
+"dataset_name": "WN18",
+"dataset_path": "./data/WN18",
+"ent_dim": 100,
+"exp_name": "rescal_2",
+"is_dev": true,
+"l2": 7.484410236920948e-05,
+"lr": 0.01,
+"model": "rescal",
+"neg_sampler": "corrupt",
+"num_epochs": 100,
+"num_negs": 2,
+"results_dir": "./data/Results/WN18/corrupt"}

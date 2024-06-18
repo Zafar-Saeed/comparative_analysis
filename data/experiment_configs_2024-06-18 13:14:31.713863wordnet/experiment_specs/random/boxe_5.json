@@ -1,0 +1,9 @@
+{"batch_size": 500,
+"ent_dim": 100,
+"is_dev": false,
+"l2": 0.0001,
+"lr": 0.01,
+"model": "boxe",
+"neg_sampler": "random",
+"num_epochs": 100,
+"num_negs": 5}

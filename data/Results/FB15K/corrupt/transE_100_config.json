@@ -1,0 +1,13 @@
+{"batch_size": 500,
+"dataset_name": "FB15K",
+"dataset_path": "./data/FB15K",
+"ent_dim": 100,
+"exp_name": "transE_100",
+"is_dev": true,
+"l2": 0.0001863777691779108,
+"lr": 0.01,
+"model": "transE",
+"neg_sampler": "corrupt",
+"num_epochs": 100,
+"num_negs": 100,
+"results_dir": "./data/Results/FB15K/corrupt"}

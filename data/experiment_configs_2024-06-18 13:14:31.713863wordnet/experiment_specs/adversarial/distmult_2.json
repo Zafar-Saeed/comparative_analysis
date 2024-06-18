@@ -1,0 +1,9 @@
+{"batch_size": 500,
+"ent_dim": 100,
+"is_dev": false,
+"l2": 3.120071843121878e-06,
+"lr": 0.01,
+"model": "distmult",
+"neg_sampler": "adversarial",
+"num_epochs": 100,
+"num_negs": 2}

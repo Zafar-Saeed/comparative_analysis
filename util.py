@@ -3,6 +3,8 @@ import pickle as pickle
 import constants
 import json
 from pykeen.datasets import get_dataset
+import re
+import sys
 # class Index(object):
 #     def __init__(self):
 #         self.ent_index = dict()
@@ -48,9 +50,6 @@ from pykeen.datasets import get_dataset
 #                 while line := sample_file.readline():
 #                     triple = line.split(" ")
 
-
-import re
-import sys
 def merge_negative_sample_files(directory_path: str, file_prefix: str):
     
     try:
@@ -166,14 +165,14 @@ def dump_json(data, directory: str, file_name: str):
 def time_difference(start_time, end_time):
     time_difference = end_time - start_time
 
-    days = time_difference // (24 * 3600)
-    time_difference %= (24 * 3600)
+    # days = time_difference // (24 * 3600)
+    # time_difference %= (24 * 3600)
     hours = time_difference // 3600
     time_difference %= 3600
     minutes = time_difference // 60
     seconds = time_difference % 60
 
-    return days,hours,minutes,seconds
+    return hours,minutes,seconds
 
 def write_triples_with_labels_to_file(triples, entity_label_map, relation_label_map, file_path):
     with open(file_path, 'w') as f:

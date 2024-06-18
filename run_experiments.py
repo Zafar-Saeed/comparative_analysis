@@ -302,11 +302,11 @@ def run_experiment(exp_config,data_path, is_code_testing=False, dataset_name=Non
     train_end_time = time.time()
     print("***Training Comlpeted*** \t Time: {}".format(datetime.now()))
     
-    total_training_time = "days: {}, hours: {}, minutes: {}, seconds: {}".format(*util.time_difference(train_start_time, train_end_time))
+    total_training_time = "{}:{}:{}".format(*util.time_difference(train_start_time, train_end_time))
     
     print("Writing trained model to directory: {}".format(config["results_dir"]))
     _model.save_state(os.path.join(config["results_dir"],"{}.model".format(config["exp_name"]))) # _model.load_state() will load the file and continue
-    
+    _model.s
     util.dump_json(losses_per_epoch, config["results_dir"], "{}_losses.json".format(config["exp_name"]))
 
 # region this callback function code is not in use    
@@ -345,7 +345,7 @@ def run_experiment(exp_config,data_path, is_code_testing=False, dataset_name=Non
     results = evaluation_loop.evaluate()
     eval_end_time = time.time()
     print("***Evaluation Ended (*** \t Time: {}".format(datetime.now))
-    total_eval_time = "days: {}, hours: {}, minutes: {}, seconds: {}".format(*util.time_difference(eval_start_time, eval_end_time))
+    total_eval_time = "{}:{}:{}".format(*util.time_difference(eval_start_time, eval_end_time))
 
     results_dict = results.to_dict()
     #print(results_dict)

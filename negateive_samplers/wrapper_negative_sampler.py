@@ -1,5 +1,6 @@
 from pykeen.sampling import NegativeSampler
 import torch
+
 import random
 from pykeen.typing import MappedTriples 
 from pykeen.sampling.basic_negative_sampler import random_replacement_
@@ -172,7 +173,7 @@ class WrapperNegativeSampler(NegativeSampler):
         #             total_num_negatives=total_num_negatives,
         #             corruption_indices=self._corruption_indices)
 
-        if isinstance(self.sampler, negative_sampling.Corrupt_Sampler):
+        if isinstance(self.sampler, (negative_sampling.Corrupt_Sampler,negative_sampling.Relational_Sampler, negative_sampling.Typed_Sampler)):
                 negative_sampler = self.sampler
                 # negative_batch = negative_sampler.replace_for_corruption(
                 #     positive_batch=positive_batch,
@@ -200,9 +201,6 @@ class WrapperNegativeSampler(NegativeSampler):
                     num_batch_samples = len(positive_batch)
 
                 start = end = 0
-
-                if num_batch_samples < 500:
-                    dummy_break = 0
 
                 for index in range(0,num_batch_samples):
                     start = index * split_index * 2 # multiplying with two because both sides are corrupted in single loop, therefore, each iteration would jump index twoice
@@ -239,7 +237,10 @@ class WrapperNegativeSampler(NegativeSampler):
                 #     num_negs_per_pos=self.num_negs_per_pos,
                 #     total_num_negatives=total_num_negatives,
                 #     corruption_indices=self._corruption_indices)
-
+        elif isinstance(self.sampler, negative_sampling.NN_Sampler, negative_sampling.Adversarial_Sampler):
+            raise Exception("NN and Adversarial Samplers are not implemented in wrapper class yet")
+        else:
+            raise Exception("Unknow Negative Sampler")
         
 
         return negative_batch.view(*batch_shape, self.num_negs_per_pos, 3)

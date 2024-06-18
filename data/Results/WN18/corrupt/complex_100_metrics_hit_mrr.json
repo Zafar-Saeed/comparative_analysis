@@ -1,0 +1,7 @@
+{"MRR": 0.7983435392379761,
+"evaluation_time": "days: 0.0, hours: 0.0, minutes: 1.0, seconds: 33.860004901885986",
+"hit_at_1": 0.7501,
+"hit_at_10": 0.8587,
+"hit_at_3": 0.8336,
+"hit_at_5": 0.8587,
+"training_time": "days: 0.0, hours: 12.0, minutes: 32.0, seconds: 49.41221785545349"}

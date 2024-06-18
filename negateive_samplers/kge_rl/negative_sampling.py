@@ -135,7 +135,6 @@ class Static_Sampler(Negative_Sampler):
         batched_negs = [self.sample(ex, is_target,self.get_candidates(ex,is_target), num_samples) for ex in batch]
         return batched_negs
 
-
 class Corrupt_Sampler(Static_Sampler):
     def __init__(self,triples,num_samples,filtered=True):
         super(Corrupt_Sampler,self).__init__(triples,num_samples,filtered)
